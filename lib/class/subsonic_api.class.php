@@ -242,6 +242,8 @@ class Subsonic_Api
             }
         }
 
+        // these children must be in an array.
+        $forceArray = array('channel');
         //get child nodes from all namespaces
         $tagsArray = array();
         foreach ($namespaces as $prefix => $namespace) {
@@ -262,7 +264,7 @@ class Subsonic_Api
                         //only entry with this key
                         if (count($childProperties) === 0) {
                             $tagsArray[$childTagName] = (object) $childProperties;
-                        } elseif (self::has_Nested_Array($childProperties) && !in_array($childTagName, $options['alwaysArray'])) {
+                        } elseif (self::has_Nested_Array($childProperties) && !in_array($childTagName, $forceArray)) {
                             $tagsArray[$childTagName] = (object) $childProperties;
                         } else {
 
@@ -453,7 +455,7 @@ class Subsonic_Api
 
     /**
      * getArtist
-     * Get details fro an artist, including a list of albums.
+     * Get details for an artist, including a list of albums.
      * Takes the artist id in parameter.
      */
     public static function getartist($input)
@@ -467,7 +469,7 @@ class Subsonic_Api
             $response = Subsonic_XML_Data::createSuccessResponse('getartist');
             Subsonic_XML_Data::addArtist($response, $artist, true, true);
         }
-        self::apiOutput($input, $response, array('musicFolder', 'child', 'playlist', 'song', 'album'));
+        self::apiOutput($input, $response);
     }
 
     /**
@@ -489,7 +491,7 @@ class Subsonic_Api
             Subsonic_XML_Data::addAlbum($response, $album, true, $addAmpacheInfo);
         }
 
-        self::apiOutput($input, $response, array('musicFolder', 'channel', 'artist', 'child', 'playlist', 'song'));
+        self::apiOutput($input, $response);
     }
 
     /**
@@ -677,7 +679,7 @@ class Subsonic_Api
         $response = Subsonic_XML_Data::createSuccessResponse('getsong');
         $song     = Subsonic_XML_Data::getAmpacheId($songid);
         Subsonic_XML_Data::addSong($response, $song);
-        self::apiOutput($input, $response, array('musicFolder', 'channel', 'artist', 'child', 'playlist', 'album'));
+        self::apiOutput($input, $response);
     }
 
     /**
