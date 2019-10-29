@@ -167,7 +167,7 @@ class Subsonic_Api
     /**
      * @param SimpleXMLElement $xml
      */
-    public static function apiOutput($input, $xml, $alwaysArray = array('musicFolder', 'artist', 'child', 'playlist', 'song', 'album'))
+    public static function apiOutput($input, $xml, $alwaysArray = array('musicFolder', 'channel', 'artist', 'child', 'playlist', 'song', 'album'))
     {
         $type     = $input['f'];
         $callback = $input['callback'];
@@ -178,7 +178,7 @@ class Subsonic_Api
      * @param SimpleXMLElement $xml
      * @param string $outputtype
      */
-    public static function apiOutput2($outputtype, $xml, $callback = '', $alwaysArray = array('musicFolder', 'artist', 'child', 'playlist', 'song', 'album'))
+    public static function apiOutput2($outputtype, $xml, $callback = '', $alwaysArray = array('musicFolder', 'channel', 'artist', 'child', 'playlist', 'song', 'album'))
     {
         $conf = array('alwaysArray' => $alwaysArray);
         if ($outputtype == "json") {
@@ -210,7 +210,7 @@ class Subsonic_Api
         $defaults = array(
             'namespaceSeparator' => ' :', //you may want this to be something other than a colon
             'attributePrefix' => '', //to distinguish between attributes and nodes with the same name
-            'alwaysArray' => array('musicFolder', 'artist', 'child', 'playlist', 'song', 'album'), //array of xml tag names which should always become arrays
+            'alwaysArray' => array('musicFolder', 'channel', 'artist', 'child', 'playlist', 'song', 'album'), //array of xml tag names which should always become arrays
             'autoArray' => true, //only create arrays for tags which appear more than once
             'textContent' => 'value', //key used for the text content of elements
             'autoText' => true, //skip textContent key if node has no attributes or child nodes
@@ -260,10 +260,9 @@ class Subsonic_Api
 
                     if (!isset($tagsArray[$childTagName])) {
                         //only entry with this key
-
                         if (count($childProperties) === 0) {
                             $tagsArray[$childTagName] = (object) $childProperties;
-                        } elseif (self::has_Nested_Array($childProperties)) {
+                        } elseif (self::has_Nested_Array($childProperties) && !in_array($childTagName, $options['alwaysArray'])) {
                             $tagsArray[$childTagName] = (object) $childProperties;
                         } else {
 
@@ -490,7 +489,7 @@ class Subsonic_Api
             Subsonic_XML_Data::addAlbum($response, $album, true, $addAmpacheInfo);
         }
 
-        self::apiOutput($input, $response, array('musicFolder', 'artist', 'child', 'playlist', 'song'));
+        self::apiOutput($input, $response, array('musicFolder', 'channel', 'artist', 'child', 'playlist', 'song'));
     }
 
     /**
@@ -678,7 +677,7 @@ class Subsonic_Api
         $response = Subsonic_XML_Data::createSuccessResponse('getsong');
         $song     = Subsonic_XML_Data::getAmpacheId($songid);
         Subsonic_XML_Data::addSong($response, $song);
-        self::apiOutput($input, $response, array('musicFolder', 'artist', 'child', 'playlist', 'album'));
+        self::apiOutput($input, $response, array('musicFolder', 'channel', 'artist', 'child', 'playlist', 'album'));
     }
 
     /**
